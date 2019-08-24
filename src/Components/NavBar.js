@@ -28,7 +28,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
-    color: 'white'
+    color: 'white',
+    paddingRight: '5%'
   }
 }))
 
@@ -125,9 +126,17 @@ export default function NavBar() {
             </Link>
           </StyledMenu>
           <Typography variant="h6" className={classes.title} align="center">
-            CDP Exchange Rate Swaps
+            RateSwap
           </Typography>
-          <ConnectButton />
+          <div
+            style={{
+              position: 'absolute',
+              right: '20px',
+              marginTop: '10px'
+            }}
+          >
+            <ConnectButton />
+          </div>
         </Toolbar>
       </AppBar>
     </React.Fragment>

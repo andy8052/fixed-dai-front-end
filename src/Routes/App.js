@@ -16,11 +16,14 @@ const theme = createMuiTheme({
   typography: { useNextVariants: true },
   palette: {
     primary: {
-      main: '#03a9f4'
+      main: '#0e0b16'
     },
     secondary: {
-      main: '#d1c4e9'
+      main: '#4717f6'
     }
+  },
+  secondary: {
+    main: '#d1c4e9'
   }
 })
 
