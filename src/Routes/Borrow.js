@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Typography from '@material-ui/core/Typography'
 
-import { useMatcher, useDAI } from '../hooks'
+import { useMatcher } from '../hooks'
 import { useWeb3Context } from 'web3-react'
 
 const ONE_ETHER_IN_WEI = '1000000000000000000'
-const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
-export default function Borrow() {
+export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
   const { library, account } = useWeb3Context()
   const matcher = useMatcher()
-  const dai = useDAI()
 
   const [daiPrice, setDaiPrice] = useState()
   useEffect(() => {
@@ -79,7 +77,13 @@ export default function Borrow() {
   }, [matcher, inputValue, daiPrice])
 
   function borrow() {
-    console.log('borrowing')
+    matcher
+      .open(ethers.utils.parseEther(inputValue), {
+        value: tradeData.minimumEth.mul(ethers.utils.bigNumberify('120')).div(ethers.utils.bigNumberify('100'))
+      })
+      .then(res => {
+        setBorrowTransactionHash(res.hash)
+      })
   }
 
   return (
@@ -105,7 +109,10 @@ export default function Borrow() {
       />
       <button onClick={borrow}>Borrow</button>
       {outputError && <p>{outputError.message}</p>}
-      {tradeData && <p>{`Rate: ${tradeData.rate.toString()}`}</p>}
+      {tradeData && tradeData.rate && <p>{`Rate: ${Number.parseFloat(tradeData.rate.toString()) / 100}%`}</p>}
+      {tradeData && tradeData.minimumEth && (
+        <p>{`Collateral Required (ETH): ${ethers.utils.formatEther(tradeData.minimumEth)}`}</p>
+      )}
     </>
   )
 }

@@ -1,14 +1,19 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
-import App from './Routes/App'
 import * as serviceWorker from './serviceWorker'
 import { BrowserRouter } from 'react-router-dom'
+import Web3Provider from 'web3-react'
+
+import Connectors from './Components/Connectors'
+import App from './Routes/App'
+import './index.css'
 
 ReactDOM.render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>,
+  <Web3Provider connectors={Connectors} libraryName="ethers.js">
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </Web3Provider>,
   document.getElementById('root')
 )
 

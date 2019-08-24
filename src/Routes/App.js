@@ -1,8 +1,6 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import Web3Provider from 'web3-react'
 
-import Connectors from './../Components/Connectors'
 import './App.css'
 import NavBar from './../Components/NavBar'
 import Lend from './Lend'
@@ -10,6 +8,7 @@ import Borrow from './Borrow'
 
 import { createMuiTheme } from '@material-ui/core/styles'
 import { ThemeProvider } from '@material-ui/styles'
+import { useWeb3Context } from 'web3-react'
 
 const theme = createMuiTheme({
   typography: { useNextVariants: true },
@@ -27,38 +26,50 @@ const theme = createMuiTheme({
 })
 
 function App() {
-  const [lenderAddress, setLenderAddress] = useState()
+  const { library } = useWeb3Context()
+  const [borrowTransactionHash, setBorrowTransactionHash] = useState()
+  const [borrowContract, setBorrowContract] = useState()
+
+  useEffect(() => {
+    if (borrowTransactionHash) {
+      library.waitForTransaction(borrowTransactionHash).then(receipt => {
+        const address = receipt.logs[2].data
+        setBorrowContract(`0x${address.substring(26, 66)}`)
+        setBorrowTransactionHash()
+      })
+    }
+  })
 
   return (
-    <Web3Provider connectors={Connectors} libraryName="ethers.js">
-      <ThemeProvider theme={theme}>
-        <NavBar />
-        <div
-          className="App"
-          style={{
-            maxWidth: '100%',
-            height: 'auto',
-            position: 'relative',
-            overflow: 'scroll',
-            paddingBottom: '100px',
-            paddingTop: '150px',
-            alignItems: 'center'
-          }}
-        >
-          <Suspense fallback={null}>
-            <Switch>
-              <Route exact path="/lend" render={() => <Lend lenderAddress={lenderAddress} />} />
-              <Route
-                exact
-                path="/borrow"
-                render={() => <Borrow lenderAddress={lenderAddress} setLenderAddress={setLenderAddress} />}
-              />
-              <Redirect to="/lend" />
-            </Switch>
-          </Suspense>
-        </div>
-      </ThemeProvider>
-    </Web3Provider>
+    <ThemeProvider theme={theme}>
+      <NavBar />
+      <div
+        className="App"
+        style={{
+          maxWidth: '100%',
+          height: 'auto',
+          position: 'relative',
+          overflow: 'scroll',
+          paddingBottom: '100px',
+          paddingTop: '150px',
+          alignItems: 'center'
+        }}
+      >
+        <Suspense fallback={null}>
+          <Switch>
+            <Route exact path="/lend" render={() => <Lend />} />
+            <Route
+              exact
+              path="/borrow"
+              render={() => (
+                <Borrow setBorrowTransactionHash={setBorrowTransactionHash} borrowContract={borrowContract} />
+              )}
+            />
+            <Redirect to="/lend" />
+          </Switch>
+        </Suspense>
+      </div>
+    </ThemeProvider>
   )
 }
 
