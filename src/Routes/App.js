@@ -6,6 +6,10 @@ import Connectors from './../Components/Connectors'
 import './App.css';
 import NavBar from './../Components/NavBar'
 import Home from './Home'
+import OpenLoan from './OpenLoan'
+import AddLiquidity from './AddLiquidity'
+
+
 import { createMuiTheme } from "@material-ui/core/styles";
 import { ThemeProvider } from "@material-ui/styles";
 
@@ -25,16 +29,35 @@ function App() {
   return (
     <Web3Provider connectors={Connectors} libraryName="ethers.js">
     <ThemeProvider theme={theme}>
-    <NavBar />
+    <NavBar/>
+    <div className="App" 
+        style={{
+            maxWidth: '100%',
+            height: 'auto',
+            position: 'relative',
+            overflow: 'scroll',
+            paddingBottom: '100px',
+            paddingTop: '150px',
+            alignItems: 'center',
+        }}>
+
         <Suspense fallback={null}>
             <Switch>
-              <Route 
-                exact path="/"
-                component={Home}
-              />
-
+                <Route 
+                    exact path="/"
+                    component={Home}
+                />
+                <Route 
+                    exact path="/open-loan"
+                    component={OpenLoan}
+                />
+                <Route 
+                    exact path="/add-liquidity"
+                    component={AddLiquidity}
+                />
               </Switch>
         </Suspense>
+    </div>
     </ThemeProvider>
     </Web3Provider>
   );
