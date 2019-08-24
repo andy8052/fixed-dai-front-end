@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Typography from '@material-ui/core/Typography'
 
-import { useMatcher, useDAI } from '../hooks'
+import { useMatcher, useDAI, useLender } from '../hooks'
 import { useWeb3Context } from 'web3-react'
 
 const ONE_ETHER_IN_WEI = '1000000000000000000'
@@ -12,6 +12,9 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
   const { library, account } = useWeb3Context()
   const matcher = useMatcher()
   const dai = useDAI()
+  const lender = useLender(borrowContract)
+
+  const [closed, setClosed] = useState()
 
   const [daiPrice, setDaiPrice] = useState()
   useEffect(() => {
@@ -88,8 +91,10 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       })
   }
 
-  function repay() {
-    dai.approve(matcher.address, MAX_UINT256).then()
+  async function repay() {
+    const approveHash = dai.approve(matcher.address, MAX_UINT256).then(result => result.hash)
+    await library.waitForTransaction(approveHash);
+    lender.repayAndRemove().then(setClosed(true))
   }
 
   return (
@@ -124,7 +129,7 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
         <Typography color={'primary'}>
           You have an open loan at ${borrowContract}
         </Typography>
-        <button onClick={repay}>Repay Loan</button>
+        <button disabled={closed} onClick={repay}>Repay Loan</button>
         </>
       )}
     </>

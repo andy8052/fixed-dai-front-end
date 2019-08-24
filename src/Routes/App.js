@@ -62,7 +62,7 @@ function App() {
               exact
               path="/borrow"
               render={() => (
-                <Borrow setBorrowTransactionHash={setBorrowTransactionHash} borrowContract={borrowContract} />
+                <Borrow setBorrowTransactionHash={setBorrowTransactionHash} borrowContract={borrowContract} setBorrowContract={setBorrowContract} />
               )}
             />
             <Redirect to="/lend" />
