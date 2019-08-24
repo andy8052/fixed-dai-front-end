@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 import { ethers } from 'ethers'
 import { useWeb3Context } from 'web3-react'
 
-import { MATCHER } from '../constants'
+import { MATCHER, DAI } from '../constants'
 import MATCHER_ABI from '../constants/matcher'
+import DAI_ABI from '../constants/dai'
 import UncheckedJsonRpcSigner from './signer'
 
 export function isAddress(value) {
@@ -37,6 +38,10 @@ export function useContract(address, ABI, withSignerIfPossible = true) {
       return null
     }
   }, [address, ABI, library, withSignerIfPossible, account])
+}
+
+export function useDAI() {
+  return useContract(DAI, DAI_ABI)
 }
 
 export function useMatcher() {
