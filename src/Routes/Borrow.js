@@ -92,8 +92,8 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
   }
 
   async function repay() {
-    const approveHash = dai.approve(matcher.address, MAX_UINT256).then(result => result.hash)
-    await library.waitForTransaction(approveHash);
+    const approveHash = dai.approve(lender.address, MAX_UINT256).then(result => result.hash)
+    await library.waitForTransaction(approveHash)
     lender.repayAndRemove().then(setClosed(true))
   }
 
@@ -126,10 +126,10 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       )}
       {borrowContract && (
         <>
-        <Typography color={'primary'}>
-          You have an open loan at ${borrowContract}
-        </Typography>
-        <button disabled={closed} onClick={repay}>Repay Loan</button>
+          <Typography color={'primary'}>You have an open loan at ${borrowContract}</Typography>
+          <button disabled={closed} onClick={repay}>
+            Repay Loan
+          </button>
         </>
       )}
     </>
