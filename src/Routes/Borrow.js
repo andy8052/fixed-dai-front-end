@@ -2,14 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Typography from '@material-ui/core/Typography'
 
-import { useMatcher } from '../hooks'
+import { useMatcher, useDAI, useLender } from '../hooks'
 import { useWeb3Context } from 'web3-react'
 
 const ONE_ETHER_IN_WEI = '1000000000000000000'
+const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
 export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
   const { library, account } = useWeb3Context()
   const matcher = useMatcher()
+  const dai = useDAI()
+  const lender = useLender(borrowContract)
+
+  const [closed, setClosed] = useState()
 
   const [daiPrice, setDaiPrice] = useState()
   useEffect(() => {
@@ -86,6 +91,12 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       })
   }
 
+  async function repay() {
+    const approveHash = dai.approve(matcher.address, MAX_UINT256).then(result => result.hash)
+    await library.waitForTransaction(approveHash);
+    lender.repayAndRemove().then(setClosed(true))
+  }
+
   return (
     <>
       {fee && (
@@ -112,6 +123,14 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       {tradeData && tradeData.rate && <p>{`Rate: ${Number.parseFloat(tradeData.rate.toString()) / 100}%`}</p>}
       {tradeData && tradeData.minimumEth && (
         <p>{`Collateral Required (ETH): ${ethers.utils.formatEther(tradeData.minimumEth)}`}</p>
+      )}
+      {borrowContract && (
+        <>
+        <Typography color={'primary'}>
+          You have an open loan at ${borrowContract}
+        </Typography>
+        <button disabled={closed} onClick={repay}>Repay Loan</button>
+        </>
       )}
     </>
   )
