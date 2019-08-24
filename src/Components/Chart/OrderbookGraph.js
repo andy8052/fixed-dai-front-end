@@ -8,18 +8,12 @@ import { createVerticalLinearGradient, hexToRGBA } from "react-stockcharts/lib/u
 import { scaleLinear } from "d3-scale";
 import { curveStep } from 'd3-shape';
 
-export default function OrderbookGraph(props) {
+export default function OrderbookGraph({ buyOrdersSorted }) {
     const canvasGradient = createVerticalLinearGradient([
         { stop: 0, color: hexToRGBA("#b5d0ff", 0.2) },
         { stop: 0.7, color: hexToRGBA("#6fa4fc", 0.4) },
         { stop: 1, color: hexToRGBA("#4286f4", 0.8) },
     ]);
-
-    const [buyOrdersSorted, setBuyOrdersSorted] = useState(props.orders);
-
-    useEffect(() => {
-        setBuyOrdersSorted(props.orders)
-    }, [props.orders])
         
     return (
         <ChartCanvas
@@ -31,15 +25,18 @@ export default function OrderbookGraph(props) {
             data={buyOrdersSorted}
             type={'svg'}
             xAccessor={d => {
-                return d.rate
+                return d ? d.rate : 0
             }}
-            xExtents={[2,4]}
+            displayXAccessor={d => {
+                return d ? d.rate : 0
+            }}
+            xExtents={[Math.min(...buyOrdersSorted.map(b => b.rate * 0.9)), Math.max(...buyOrdersSorted.map(b => b.rate * 1.1))]}
             panEvent={true}
             seriesName={`Orderbook`}
             zoomEvent={false}
             xScale={scaleLinear()}
     >
-        <Chart id={10} yExtents={[2000, 4000]} width={'80%'}>
+        <Chart id={10} yExtents={[Math.min(...buyOrdersSorted.map(b => b.amount * 0.9)), Math.max(...buyOrdersSorted.map(b => b.amount * 1.1))]} width={'80%'}>
         <linearGradient id="MyGradient" x1="0" y1="100%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#196719" stopOpacity={0.2} />
                 <stop offset="70%" stopColor="#2db92d" stopOpacity={0.4} />

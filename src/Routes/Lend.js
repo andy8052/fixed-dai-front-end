@@ -4,6 +4,8 @@ import Typography from '@material-ui/core/Typography'
 
 import { useMatcher, useDAI } from '../hooks'
 import { useWeb3Context } from 'web3-react'
+import './../Components/Chart/OrderbookGraph'
+import OrderbookGraph from './../Components/Chart/OrderbookGraph';
 
 const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
@@ -87,6 +89,12 @@ export default function Lend() {
   const [rateInput, setRateInput] = useState('')
   const [amountInput, setAmountInput] = useState('')
 
+  const chartData = offers && offers.map(offer => {
+      return { amount: Number(ethers.utils.formatEther(offer.amount)), rate: Number.parseInt(offer.rate.toString()) / 100 }
+  })
+
+  console.log(chartData)
+
   return (
     <>
       {fee && (
@@ -132,6 +140,9 @@ export default function Lend() {
       <button onClick={approveOrLend} disabled={!!!daiAllowance}>
         {daiAllowance && daiAllowance.isZero() ? 'Approve' : 'Lend'}
       </button>
+      {chartData && chartData.length > 0 && <OrderbookGraph
+        buyOrdersSorted={chartData}
+      />}
     </>
   )
 }
