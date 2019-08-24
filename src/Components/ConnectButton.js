@@ -1,48 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { useWeb3Context } from "web3-react";
-import Connectors from './Connectors'
-import Button from '@material-ui/core/Button';
+import React, { useEffect } from 'react'
+import { ethers } from 'ethers'
+import { useWeb3Context, Connectors } from 'web3-react'
+import Button from '@material-ui/core/Button'
 
-export default function ConnectButton(){
-    const context = useWeb3Context();
+const { Connector } = Connectors
 
-    const bStyle = {
-        align: 'right'
+const bStyle = {
+  align: 'right',
+  color: 'white'
+}
+
+export default function ConnectButton() {
+  const { active, account, setConnector, error } = useWeb3Context()
+
+  useEffect(() => {
+    if (!active && !error && window.ethereum) {
+      const library = new ethers.providers.Web3Provider(window.ethereum)
+      library.listAccounts().then(accounts => {
+        if (accounts.length >= 1) {
+          setConnector('MetaMask', { suppressAndThrowErrors: true }).catch(() => {})
+        }
+      })
     }
-    const [active, setActive] = useState(false);
+  })
 
-    useEffect( () => {
-        console.log(context)
-    }, [context.active])
-
-    function handleContextSetting(){
-        
-    }
-    return(
-        <React.Fragment>
-            {context.error && (
-                <p>An error occurred, check the console for details.</p>
-            )}
-            {(Object.keys(Connectors).map(connectorName => (
-            <React.Fragment>
-            <Button
-            style = {bStyle}
-            key={connectorName}
-            disabled={context.connectorName === connectorName}
-            onClick={() => {
-                console.log(connectorName)
-                context.setConnector(connectorName)
-            }}
-            variant='outlined'
-            size='small'
-            color='secondary'
-            >
-            {!context.account ? 'Connect Web3' : context.account.substring(0,3) + '...' + context.account.substring(19,22)}
-            </Button>
-            <br />
-            <br />
-            </React.Fragment>
-        )))}
-        </React.Fragment>
-    )
+  return (
+    <>
+      {error ? (
+        error.code === Connector.errorCodes.UNSUPPORTED_NETWORK ? (
+          <p>Please switch to Rinkeby.</p>
+        ) : (
+          <p>An error occurred.</p>
+        )
+      ) : (
+        <Button
+          style={bStyle}
+          disabled={active}
+          onClick={() => {
+            setConnector('MetaMask')
+          }}
+          variant="outlined"
+          size="small"
+          color="secondary"
+        >
+          {!active ? 'Connect Web3' : account.substring(0, 6) + '...' + account.substring(38, 42)}
+        </Button>
+      )}
+    </>
+  )
 }
