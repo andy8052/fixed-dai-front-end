@@ -143,7 +143,7 @@ export default function Lend() {
       <button onClick={approveOrLend} disabled={!!!daiAllowance}>
         {daiAllowance && daiAllowance.isZero() ? 'Approve' : 'Lend'}
       </button>
-      {chartData && chartData.length > 0 && <OrderbookGraph buyOrdersSorted={chartData} />}
+      {chartData && chartData.length > 1 && <OrderbookGraph buyOrdersSorted={chartData} />}
     </>
   )
 }
