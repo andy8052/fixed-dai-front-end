@@ -29,6 +29,7 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     flexGrow: 1,
+    paddingRight: '5%'
   },
 }));
 
@@ -133,9 +134,17 @@ export default function NavBar(){
               className={classes.title}
               align='center'
             >
-              CDP Exchange Rate Swaps
+              RateSwap
             </Typography>
+            <div
+                style={{
+                    position: 'absolute',
+                    right: '20px',
+                    marginTop: '10px'
+                }}
+            >
             <ConnectButton />
+            </div>
           </Toolbar>
         </AppBar>
     </React.Fragment>

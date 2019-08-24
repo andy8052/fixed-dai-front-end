@@ -7,7 +7,8 @@ export default function ConnectButton(){
     const context = useWeb3Context();
 
     const bStyle = {
-        align: 'right'
+        align: 'right',
+        color: '#d1c4e9'
     }
     const [active, setActive] = useState(false);
 
@@ -15,9 +16,6 @@ export default function ConnectButton(){
         console.log(context)
     }, [context.active])
 
-    function handleContextSetting(){
-        
-    }
     return(
         <React.Fragment>
             {context.error && (
