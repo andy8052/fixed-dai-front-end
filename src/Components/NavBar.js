@@ -12,7 +12,6 @@ import MenuItem from '@material-ui/core/MenuItem'
 import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 
-import HomeIcon from '@material-ui/icons/Home'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import TransformIcon from '@material-ui/icons/Transform'
 
@@ -100,28 +99,20 @@ export default function NavBar() {
             open={Boolean(anchorEl)}
             onClose={handleClose}
           >
-            <Link to="/" style={{ textDecoration: 'none' }}>
-              <StyledMenuItem>
-                <ListItemIcon>
-                  <HomeIcon />
-                </ListItemIcon>
-                <ListItemText primary="Home" />
-              </StyledMenuItem>
-            </Link>
-            <Link to="/open-loan" style={{ textDecoration: 'none' }}>
+            <Link to="/lend" style={{ textDecoration: 'none' }}>
               <StyledMenuItem>
                 <ListItemIcon>
                   <AccountBalanceWalletIcon />
                 </ListItemIcon>
-                <ListItemText primary="Open CDP" />
+                <ListItemText primary="Lend" />
               </StyledMenuItem>
             </Link>
-            <Link to="/add-liquidity" style={{ textDecoration: 'none' }}>
+            <Link to="/borrow" style={{ textDecoration: 'none' }}>
               <StyledMenuItem>
                 <ListItemIcon>
                   <TransformIcon />
                 </ListItemIcon>
-                <ListItemText primary="Add Liquidity" />
+                <ListItemText primary="Borrow" />
               </StyledMenuItem>
             </Link>
           </StyledMenu>

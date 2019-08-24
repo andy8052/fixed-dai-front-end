@@ -1,15 +1,17 @@
-import React, { useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ethers } from 'ethers'
 import Typography from '@material-ui/core/Typography'
 
-import { useMatcher } from '../hooks'
+import { useMatcher, useDAI } from '../hooks'
 import { useWeb3Context } from 'web3-react'
 
 const ONE_ETHER_IN_WEI = '1000000000000000000'
+const MAX_UINT256 = '115792089237316195423570985008687907853269984665640564039457584007913129639935'
 
-export default function Home() {
-  const { library } = useWeb3Context()
+export default function Borrow() {
+  const { library, account } = useWeb3Context()
   const matcher = useMatcher()
+  const dai = useDAI()
 
   const [daiPrice, setDaiPrice] = useState()
   useEffect(() => {
@@ -38,22 +40,6 @@ export default function Home() {
       }
     }
   }, [matcher, library])
-
-  const [offers, setOffers] = useState()
-  useEffect(() => {
-    if (matcher) {
-      matcher.best().then(async b => {
-        let next = b
-        let accumulatedOffers = []
-        while (!next.isZero()) {
-          const offer = await matcher.offers(b)
-          accumulatedOffers.push(offer)
-          next = offer.next
-        }
-        setOffers(accumulatedOffers)
-      })
-    }
-  }, [matcher])
 
   const [inputValue, setInputValue] = useState('')
   const [tradeData, setTradeData] = useState()
@@ -92,6 +78,10 @@ export default function Home() {
     }
   }, [matcher, inputValue, daiPrice])
 
+  function borrow() {
+    console.log('borrowing')
+  }
+
   return (
     <>
       {fee && (
@@ -99,48 +89,23 @@ export default function Home() {
           Compound Borrow Rate (DAI): {Number.parseFloat(fee.toString()) / 100}%
         </Typography>
       )}
-
       {daiPrice && (
         <Typography color={'primary'}>
           Price (ETH): {(1 / Number.parseFloat(ethers.utils.formatEther(daiPrice))).toPrecision(5)} DAI / 1 ETH
         </Typography>
       )}
-
-      {offers && (
-        <Typography color={'primary'}>
-          Offers:{' '}
-          {offers.length === 0
-            ? 'None'
-            : offers.map((o, i) => (
-                <Fragment key={i}>
-                  <br />
-                  Rate: {Number.parseFloat(o.rate.toString()) / 100}%
-                  <br />
-                  Amount: {Number.parseFloat(ethers.utils.formatEther(o.amount)).toPrecision(5)}
-                  <br />
-                  <br />
-                </Fragment>
-              ))}
-        </Typography>
-      )}
-
+      Amount (DAI):{' '}
       <input
         type="number"
-        disabled={!!!matcher || !offers} /*  || offers.length === 0 */
+        disabled={!account}
         value={inputValue}
         onChange={e => {
           setInputValue(e.target.value)
         }}
       />
-
-      {outputError && <Typography color={'error'}>{outputError.message}</Typography>}
-      {tradeData && (
-        <Typography color={'primary'}>
-          Rate: {Number.parseFloat(tradeData.rate.toString()) / 100}%
-          <br />
-          Minimum Ether: {Number.parseFloat(ethers.utils.formatEther(tradeData.minimumEth)).toPrecision(2)}
-        </Typography>
-      )}
+      <button onClick={borrow}>Borrow</button>
+      {outputError && <p>{outputError.message}</p>}
+      {tradeData && <p>{`Rate: ${tradeData.rate.toString()}`}</p>}
     </>
   )
 }
