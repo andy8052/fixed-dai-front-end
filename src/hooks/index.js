@@ -5,6 +5,7 @@ import { useWeb3Context } from 'web3-react'
 import { MATCHER, DAI } from '../constants'
 import MATCHER_ABI from '../constants/matcher'
 import DAI_ABI from '../constants/dai'
+import LENDER_ABI from '../constants/lender'
 import UncheckedJsonRpcSigner from './signer'
 
 export function isAddress(value) {
@@ -46,4 +47,8 @@ export function useDAI() {
 
 export function useMatcher() {
   return useContract(MATCHER, MATCHER_ABI)
+}
+
+export function useLender(address) {
+  return useContract(address, LENDER_ABI)
 }
