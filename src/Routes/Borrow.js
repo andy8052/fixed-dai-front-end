@@ -125,7 +125,9 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       {outputError && <p>{outputError.message}</p>}
       {tradeData && tradeData.rate && <p>{`Rate: ${Number.parseFloat(tradeData.rate.toString()) / 100}%`}</p>}
       {tradeData && tradeData.minimumEth && (
-        <p>{`Collateral Required (ETH): ${ethers.utils.formatEther(tradeData.minimumEth)}`}</p>
+        <p>{`Collateral Required (ETH): ${Number.parseFloat(ethers.utils.formatEther(tradeData.minimumEth)).toPrecision(
+          3
+        )}`}</p>
       )}
       {borrowContract && (
         <>
