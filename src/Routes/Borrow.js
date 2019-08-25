@@ -131,7 +131,7 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
       )}
       {borrowContract && (
         <>
-          <Typography color={'primary'}>You have an open loan at ${borrowContract}</Typography>
+          <Typography color={'primary'}>You have an open loan at {borrowContract}</Typography>
           <button disabled={closed} onClick={repay}>
             Repay Loan
           </button>
