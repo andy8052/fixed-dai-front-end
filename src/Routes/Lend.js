@@ -105,23 +105,22 @@ export default function Lend() {
           Compound Borrow Rate (DAI): {Number.parseFloat(fee.toString()) / 100}%
         </Typography>
       )}
+      <hr />
       {offers && (
         <Typography color={'primary'}>
-          Offers:{' '}
           {offers.length === 0
             ? 'None'
             : offers.map((o, i) => (
                 <Fragment key={i}>
-                  <br />
-                  Rate: {Number.parseFloat(o.rate.toString()) / 100}%
-                  <br />
-                  Amount: {Number.parseFloat(ethers.utils.formatEther(o.amount)).toPrecision(5)}
-                  <br />
+                  Rate: {Number.parseFloat(o.rate.toString()) / 100}% | Amount:{' '}
+                  {Number.parseFloat(ethers.utils.formatEther(o.amount)).toPrecision(3)}
                   <br />
                 </Fragment>
               ))}
         </Typography>
       )}
+      {chartData && chartData.length > 1 && <OrderbookGraph buyOrdersSorted={chartData} />}
+      <hr />
       Rate:{' '}
       <input
         disabled={!!!daiAllowance || daiAllowance.isZero()}
@@ -140,10 +139,10 @@ export default function Lend() {
           setAmountInput(e.target.value)
         }}
       />
+      <br />
       <button onClick={approveOrLend} disabled={!!!daiAllowance}>
         {daiAllowance && daiAllowance.isZero() ? 'Approve' : 'Lend'}
       </button>
-      {chartData && chartData.length > 1 && <OrderbookGraph buyOrdersSorted={chartData} />}
     </>
   )
 }

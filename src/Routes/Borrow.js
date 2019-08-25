@@ -104,11 +104,13 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
           Compound Borrow Rate (DAI): {Number.parseFloat(fee.toString()) / 100}%
         </Typography>
       )}
+      <hr />
       {daiPrice && (
         <Typography color={'primary'}>
           Price (ETH): {(1 / Number.parseFloat(ethers.utils.formatEther(daiPrice))).toPrecision(5)} DAI / 1 ETH
         </Typography>
       )}
+      <hr />
       Amount (DAI):{' '}
       <input
         type="number"
@@ -118,6 +120,7 @@ export default function Borrow({ setBorrowTransactionHash, borrowContract }) {
           setInputValue(e.target.value)
         }}
       />
+      <br />
       <button onClick={borrow}>Borrow</button>
       {outputError && <p>{outputError.message}</p>}
       {tradeData && tradeData.rate && <p>{`Rate: ${Number.parseFloat(tradeData.rate.toString()) / 100}%`}</p>}
