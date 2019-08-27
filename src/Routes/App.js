@@ -59,8 +59,7 @@ function App() {
           <Switch>
             <Route exact path="/lend" render={() => <Lend />} />
             <Route
-              exact
-              path="/borrow"
+              exact path="/borrow"
               render={() => (
                 <Borrow setBorrowTransactionHash={setBorrowTransactionHash} borrowContract={borrowContract} setBorrowContract={setBorrowContract} />
               )}

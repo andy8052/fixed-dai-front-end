@@ -117,7 +117,7 @@ export default function NavBar() {
             </Link>
           </StyledMenu>
           <Typography variant="h6" className={classes.title} align="center">
-            RateSwap
+            RateLock
           </Typography>
           <div
             style={{
